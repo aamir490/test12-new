@@ -1,9 +1,9 @@
 version: '3.9'
 
 services:
-  hggytyrt:
-    container_name: dfffffff
-    image: ioiioioi/hggytyrt
+  gittext:
+    container_name: vari
+    image: 518990/gittext
     build: .
     ports:
       - "3000:3000"
