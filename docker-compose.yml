@@ -1,0 +1,9 @@
+version: '3.9'
+
+services:
+  hggytyrt:
+    container_name: dfffffff
+    image: ioiioioi/hggytyrt
+    build: .
+    ports:
+      - "3000:3000"
