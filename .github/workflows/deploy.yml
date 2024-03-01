@@ -20,7 +20,7 @@ jobs:
 
       - name: SSH into EC2 instance and deploy
         run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@13.232.155.130 << 'EOF'
+          ssh -o StrictHostKeyChecking=yes -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@13.232.155.130 << 'EOF'
             docker pull 518990/gittext:new
             docker stop nextjs-app || true
             docker rm nextjs-app || true
