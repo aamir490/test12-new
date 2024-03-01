@@ -19,3 +19,15 @@ jobs:
         with:
           push: true
           tags: 518990/gittext:new
+  deploy:
+    name: Deploy Next.js App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+
+      - name: Pull Docker image from Docker Hub
+        run: docker pull 518990/gittext:new
+
+      - name: Run Docker container
+        run: docker run -d --name nextjs-app -p 3000:3000 518990/gittext:new
