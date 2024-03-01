@@ -13,8 +13,10 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v4  # Updated to the latest version
 
-      - name: Debug SSH connection
-        run: ssh -vvvT -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@13.232.155.130
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.7.0  # Updated to the latest version
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: SSH into EC2 instance and deploy
         run: |
