@@ -37,15 +37,15 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Set permissions for private key
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > nordstom_rack.pem
-          chmod 600 nordstom_rack.pem
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > -i /home/ubuntu/nordstom_rack.pem
+          chmod 777 -i /home/ubuntu/nordstom_rack.pem
       - name: Pull Docker image
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@13.232.155.130 'sudo docker pull 518990/gittext:latest'
+          ssh -o StrictHostKeyChecking=no -i /home/ubuntu/nordstom_rack.pem ubuntu@13.232.155.130 'sudo docker pull 518990/gittext:latest'
       - name: Stop running container
         run: |
-          ssh -o StrictHostKeyChecking=no  ubuntu@13.232.155.130 'sudo docker stop cddemo || true'
-          ssh -o StrictHostKeyChecking=no  ubuntu@13.232.155.130 'sudo docker rm cddemo || true'
+          ssh -o StrictHostKeyChecking=no -i /home/ubuntu/nordstom_rack.pem ubuntu@13.232.155.130 'sudo docker stop cddemo || true'
+          ssh -o StrictHostKeyChecking=no -i /home/ubuntu/nordstom_rack.pem ubuntu@13.232.155.130 'sudo docker rm cddemo || true'
       - name: Run new container
         run: |
-          ssh -o StrictHostKeyChecking=no  ubuntu@13.232.155.130 'sudo docker run -d --name cddemo -p 3000:3000 518990/gittext:latest'
+          ssh -o StrictHostKeyChecking=no -i /home/ubuntu/nordstom_rack.pem ubuntu@13.232.155.130 'sudo docker run -d --name cddemo -p 3000:3000 518990/gittext:latest'
