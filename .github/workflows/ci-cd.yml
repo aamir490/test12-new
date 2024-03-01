@@ -1,53 +1,29 @@
-name: Build on DockerHub and Deploy to AWS
+name: CICD
+
 on:
   push:
-    branches:
-      - main
-env:
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  SSH_PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY }}
+    branches: [cicd-docker-ec2]
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest]
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          push: true
-          tags: 518990/gittext:latest
+      - name: Checkout source
+        uses: actions/checkout@v3
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }} 
+      - name: Build docker image
+        run: docker build -t 518990/gittext .
+      - name: Publish image to docker hub
+        run: docker push 518990/gittext:latest
+        
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: [ip-172-31-36-83]
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Set permissions for private key
-        run: |
-          echo "${{ secrets.AWS_PRIVATE_KEY }}" > key.pem
-          chmod 600 key.pem
-      - name: Pull Docker image
-        run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@13.232.155.130 'sudo docker pull 518990/gittext:latest'
-      - name: Stop running container
-        run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@13.232.155.130 'sudo docker stop cddemo || true'
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@13.232.155.130 'sudo docker rm cddemo || true'
-      - name: Run new container
-        run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@13.232.155.130 'sudo docker run -d --name cddemo -p 3000:3000 518990/gittext:latest'
+      - name: Pull image from docker hub
+        run: docker pull 518990/gittext:latest
+      - name: Delete old container
+        run: docker rm -f nodejs-app-container
+      - name: Run docker container
+        run: docker run -d -p 3000:3000 --name nodejs-app-container 518990/gittext:latest
