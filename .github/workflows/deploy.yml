@@ -13,16 +13,13 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v4
 
-      - name: Install SSH key
-        uses: webfactory/ssh-agent@v0.7.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: SSH into EC2 instance and deploy
+      - name: Deploy Docker image
         run: |
-          ssh -v -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@13.232.155.130 << 'EOF'
+          ssh ubuntu@13.232.155.130 -o StrictHostKeyChecking=no -i <(echo "$SSH_PRIVATE_KEY") << 'EOF'
             docker pull 518990/gittext:new
             docker stop nextjs-app || true
             docker rm nextjs-app || true
             docker run -d --name nextjs-app -p 3000:3000 518990/gittext:new
           EOF
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
