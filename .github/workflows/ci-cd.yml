@@ -37,8 +37,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Set permissions for private key
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > -i /home/ubuntu/nordstom_rack.pem
-          chmod 777 -i /home/ubuntu/nordstom_rack.pem
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" >  /home/ubuntu/nordstom_rack.pem
+          chmod 777 /home/ubuntu/nordstom_rack.pem
       - name: Pull Docker image
         run: |
           ssh -o StrictHostKeyChecking=no -i /home/ubuntu/nordstom_rack.pem ubuntu@13.232.155.130 'sudo docker pull 518990/gittext:latest'
