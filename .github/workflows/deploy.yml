@@ -22,7 +22,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@13.232.155.130 << 'EOF'
             docker pull 518990/gittext:new
-            docker stop nextjs-app || true
-            docker rm nextjs-app || true
-            docker run -d --name nextjs-app -p 3000:3000 518990/gittext:new
+            docker stop d3aa66f48672 || true
+            docker rm d3aa66f48672 || true
+            docker run -d -p 3000:3000 518990/gittext:new
           EOF
