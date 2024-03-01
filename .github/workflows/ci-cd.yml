@@ -41,7 +41,7 @@ jobs:
           chmod 600 key.pem
       - name: Pull Docker image
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@ip-172-31-47-211 'sudo docker pull your-dockerhub-username/cddemo:latest'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@ip-172-31-47-211 'sudo docker pull 518990/gittext:new'
       - name: Stop running container
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@ip-172-31-47-211 'sudo docker stop cddemo || true'
